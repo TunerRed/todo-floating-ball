@@ -1,5 +1,5 @@
 # Todo Floating Ball
-[中文版](README-zh.md)
+[中文版](README_zh.md)
 
 A lightweight Windows desktop todo application featuring a floating ball interface, built with [Wails](https://wails.io/) (Go + React).
 
