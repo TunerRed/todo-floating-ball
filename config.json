@@ -1,0 +1,12 @@
+{
+  "theme_color": "#3498db",
+  "floating_opacity": 0.45,
+  "custom_icon_path": "C:\\Users\\Administrator\\Pictures\\F227202DBB8B4BF6AD1CAB4F9ACDF910.jpg",
+  "edge_light_color": "#11ff00",
+  "reminder_color": "#e74c3c",
+  "start_on_boot": true,
+  "notification_days": 0,
+  "floating_ball_mode": "standard",
+  "window_width": 1080,
+  "window_height": 720
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "todo-ball-wails",
+  "outputfilename": "我的待办",
+  "info": {
+    "productName": "我的待办",
+    "companyName": "Personal",
+    "productVersion": "1.0.0",
+    "fileDescription": "我的待办悬浮球",
+    "copyright": "© 2026"
+  },
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "",
+    "email": ""
+  }
+}

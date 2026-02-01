@@ -1,0 +1,19 @@
+build/bin
+node_modules
+frontend/dist
+assets
+
+# Local Compiler Toolchain
+compiler/
+
+# IDE
+.idea/
+.vscode/
+
+# OS System Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
