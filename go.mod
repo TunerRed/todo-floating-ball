@@ -1,4 +1,4 @@
-module todo-ball-wails
+module todo-ball
 
 go 1.23
 

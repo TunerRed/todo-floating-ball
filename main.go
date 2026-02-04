@@ -9,7 +9,7 @@ import (
 
 	"path/filepath"
 
-	"todo-ball-wails/platform"
+	"todo-ball/platform"
 
 	"github.com/energye/systray"
 	"github.com/wailsapp/wails/v2"
@@ -23,6 +23,28 @@ var assets embed.FS
 
 //go:embed icon.ico
 var iconData []byte
+
+// GetAppIconPath returns the path to the app icon.
+// It tries to find icon.ico in the app directory.
+// If not found, it extracts the embedded icon to a temp file.
+func GetAppIconPath() string {
+	appDir := getAppDir()
+	iconPath := filepath.Join(appDir, "icon.ico")
+	if _, err := os.Stat(iconPath); err == nil {
+		return iconPath
+	}
+
+	// Extract to temp
+	tempDir := os.TempDir()
+	tempIconPath := filepath.Join(tempDir, "todo-ball-icon.ico")
+
+	// Only write if not exists or size differs (simple check)
+	if info, err := os.Stat(tempIconPath); err != nil || info.Size() != int64(len(iconData)) {
+		os.WriteFile(tempIconPath, iconData, 0644)
+	}
+
+	return tempIconPath
+}
 
 type IconConfig struct {
 	TrayIcon       string `json:"tray_icon"`
@@ -39,11 +61,13 @@ func getAppDir() string {
 }
 
 func loadIconConfig() IconConfig {
+	defaultIcon := GetAppIconPath()
+
 	// Default
 	config := IconConfig{
-		TrayIcon:       "", // Will fallback to embedded
-		MainWindowIcon: "assets/taskicon.ico",
-		TaskbarIcon:    "assets/taskicon.ico",
+		TrayIcon:       defaultIcon,
+		MainWindowIcon: defaultIcon,
+		TaskbarIcon:    defaultIcon,
 	}
 
 	appDir := getAppDir()
@@ -55,10 +79,16 @@ func loadIconConfig() IconConfig {
 
 	// Resolve relative paths
 	resolvePath := func(path string) string {
+		fullPath := path
 		if path != "" && !filepath.IsAbs(path) {
-			return filepath.Join(appDir, path)
+			fullPath = filepath.Join(appDir, path)
 		}
-		return path
+
+		// Check if file exists, if not use default
+		if _, err := os.Stat(fullPath); err != nil {
+			return defaultIcon
+		}
+		return fullPath
 	}
 
 	config.TrayIcon = resolvePath(config.TrayIcon)
@@ -200,6 +230,34 @@ func main() {
 		appOptions.Windows = &windows.Options{
 			// WebviewIsTransparent: false,
 			// WindowIsTranslucent:  false,
+		}
+	}
+
+	// Check for local WebView2 Fixed Version
+	// Users can place the Fixed Version Runtime in a "WebView2" subfolder next to the exe
+	appDir := getAppDir()
+	webView2Dir := filepath.Join(appDir, "WebView2")
+	if info, err := os.Stat(webView2Dir); err == nil && info.IsDir() {
+		// Search for msedgewebview2.exe to find the correct root
+		var browserPath string
+		filepath.Walk(webView2Dir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.Name() == "msedgewebview2.exe" {
+				browserPath = filepath.Dir(path)
+				return filepath.SkipDir // Found it
+			}
+			return nil
+		})
+
+		if browserPath != "" {
+			println("Using local WebView2 runtime at:", browserPath)
+			appOptions.Windows.WebviewBrowserPath = browserPath
+		} else {
+			// Fallback to the dir itself if scan fails
+			println("Using local WebView2 runtime at:", webView2Dir)
+			appOptions.Windows.WebviewBrowserPath = webView2Dir
 		}
 	}
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "todo-ball-wails",
+  "name": "todo-ball",
   "outputfilename": "我的待办",
   "info": {
     "productName": "我的待办",

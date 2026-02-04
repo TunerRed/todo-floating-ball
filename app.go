@@ -8,9 +8,9 @@ import (
 	"os/exec"
 	"path/filepath"
 	"time"
-	"todo-ball-wails/models"
-	"todo-ball-wails/platform"
-	"todo-ball-wails/storage"
+	"todo-ball/models"
+	"todo-ball/platform"
+	"todo-ball/storage"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -97,7 +97,7 @@ func (a *App) startup(ctx context.Context) {
 			if hwnd != 0 {
 				iconPath := a.IconConfig.MainWindowIcon
 				if iconPath == "" {
-					iconPath = "assets/taskicon.ico"
+					iconPath = GetAppIconPath()
 				}
 				platform.SetWindowIcon(hwnd, iconPath, platform.ICON_SMALL)
 				platform.SetWindowIcon(hwnd, iconPath, platform.ICON_BIG)
